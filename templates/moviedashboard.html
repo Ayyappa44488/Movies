@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details</title>
+    <link rel="stylesheet" href="/static/dashboard.css" />
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+
+<body>
+    <div class="header_fixed">
+        <div class="filter">
+            <h1>Filters</h1>
+            <form action="/filter" method="get">
+                <div class="dropdown">
+                    <input type="text" class="dropdown-input" readonly placeholder="Select Genre" name="genre_id" value="{{sgenre}}"> 
+                    <div class="dropdown-content">
+                    {%for i in tgenres%}
+                    {%if i[0] in genres%}
+                      <input type="checkbox" id="genres{{i[0]}}" value="{{i[0]}}" checked>
+                    {%else%}
+                        <input type="checkbox" id="genres{{i[0]}}" value="{{i[0]}}">
+                    {%endif%}
+                    <label for="genres{{i[0]}}">{{i[1]}}</label><br>
+                    {%endfor%}
+                    </div>
+                  </div><br>
+                <!-- Genre Dropdown -->
+                <div class="dropdown">
+                  <input type="text" class="dropdown-input" readonly placeholder="Select Actor" name="actor_id" value="{{sactor}}"> 
+                  <div class="dropdown-content">
+                    {%for i in tactors%}
+                    {%if i[0] in actors%}
+                    <input type="checkbox" id="actors{{i[0]}}" value="{{i[0]}}" checked>
+                    {%else%}
+                    <input type="checkbox" id="actors{{i[0]}}" value="{{i[0]}}">
+                    {%endif%}
+                    <label for="actors{{i[0]}}">{{i[1]}}</label><br>
+                    {%endfor%}
+                  </div>
+                </div><br>
+            
+                <!-- Technician Dropdown -->
+                <div class="dropdown">
+                  <input type="text" class="dropdown-input" readonly placeholder="Select Technician" name="technician_id" value="{{stechnician}}"> 
+                  <div class="dropdown-content">
+                    {%for i in ttechnicians%}
+                    {%if i[0] in technicians%}
+                    <input type="checkbox" id="technicians{{i[0]}}" value="{{i[0]}}" checked> 
+                    {%else%}
+                    <input type="checkbox" id="technicians{{i[0]}}" value="{{i[0]}}">
+                    {%endif%}
+                    <label for="technicians{{i[0]}}">{{i[1]}}</label><br>
+                    {%endfor%}
+                    <!-- Add more technicians as needed -->
+                  </div>
+                </div><br>
+        <button type="submit" class="apply">Apply Filters</button>
+    </form>
+        </div>
+        <div>
+        <table>
+            <div class="head">
+                <thead>
+                    <tr style="border: 2px solid #53C9C2;">
+                        <th>Movie <span id="span">Details</span></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>
+                            <input type="text" id="searchInput" class="search_bar" name="search" placeholder="By name,year_of_release..">
+                        </th>
+                    </tr>
+                </thead>
+            </div>
+            <tbody>
+                <tr style="border: 2px solid #53C9C2;">
+                    <th>Name</th>
+                    <th>Year Of Release</th>
+                    <th>Average Rating</th>
+                    <th>More details</th>
+                    <th>Update Details</th>
+                    <th>Delete Movie</th>
+                </tr>
+                {% for row in movies %}
+                <tr class="search-row">
+                    <td>{{row[1] }}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>
+                    <td><button class="btn" data-unique-number="{{ row[0] }}"><b>More</b></button></td>
+                    <td><button class="btn1" data-unique-number="{{ row[0] }}"><b>Update</b></button></td>
+                    <td><button class="btn2" data-unique-number="{{ row[0] }}"><b>Delete</b></button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+    <script>
+        const viewButtons = document.querySelectorAll('.btn');
+        viewButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Retrieve the unique_number from the data attribute
+                const uniqueNumber = button.getAttribute('data-unique-number');
+                document.location.href = '/moviedetails/'+uniqueNumber;
+            });
+        }); 
+        const viewButtons1 = document.querySelectorAll('.btn1');
+        viewButtons1.forEach(button => {
+            button.addEventListener('click', function() {
+                // Retrieve the unique_number from the data attribute
+                const uniqueNumber = button.getAttribute('data-unique-number');
+                document.location.href = '/update/'+uniqueNumber;
+            });
+        }); 
+        const viewButtons2 = document.querySelectorAll('.btn2');
+        viewButtons2.forEach(button => {
+            button.addEventListener('click', function() {
+                // Retrieve the unique_number from the data attribute
+                const uniqueNumber = button.getAttribute('data-unique-number');
+                document.location.href = '/deletemovie/'+uniqueNumber;
+            });
+        }); 
+        $(document).ready(function () {
+            $("#searchInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $(".search-row").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        }); 
+
+        // Script to update input box on selection change
+        const dropdownContainers = document.querySelectorAll('.dropdown');
+        dropdownContainers.forEach(container => {
+        const selectedItems = container.querySelectorAll('.dropdown-content input[type="checkbox"]');
+        const inputBox = container.querySelector('.dropdown-input');
+        selectedItems.forEach(item => {
+            item.addEventListener('change', function() {
+            let selectedValues = [];
+            selectedItems.forEach(checkbox => {
+                if (checkbox.checked) {
+                selectedValues.push(checkbox.value);
+                }
+            });
+            inputBox.value = selectedValues.join(','); // Join selected values with comma
+            });
+        });
+        });
+    </script>
+</body>
+</html>

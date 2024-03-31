@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Update Movie</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+  }
+
+  form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px; /* Increased form width */
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  div {
+    margin-bottom: 15px;
+  }
+
+  label {
+    display: block;
+    font-weight: bold;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 5px;
+  }
+
+  input[type="checkbox"] {
+    margin-right: 5px;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 15px;
+  }
+
+  .dropdown-input {
+    display: inline-block;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+    background-color: #fff;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 200px; /* Adjusted minimum width */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    overflow-y: auto;
+    max-height: 200px; /* Increased max-height */
+  }
+
+  .dropdown-content a {
+    color: black;
+    padding: 8px 16px; /* Adjusted padding */
+    text-decoration: none;
+    display: block;
+  }
+
+  .dropdown-content a:hover {background-color: #f0f0f0;}
+
+  .dropdown:hover .dropdown-content {display: block;}
+
+  button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+</style>
+</head>
+<body>
+  <form action="/updatemovie" method="post">
+    <h2>Movie Details</h2>
+    <div>
+      <label for="movie_id">Movie ID:</label>
+      <input type="text" id="movie_id" name="movie_id" value="{{movie[0][0]}}"readonly>
+    </div>
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" value="{{movie[0][1]}}"required>
+    </div>
+    <div>
+      <label for="year_of_release">Year of Release:</label>
+      <input type="number" id="year_of_release" name="year_of_release" value="{{movie[0][2]}}" required>
+    </div>
+    <div>
+      <label for="average_rating">Average Rating:</label>
+      <input type="number" id="average_rating" name="average_rating" step="0.01"value="{{movie[0][3]}}" required>
+    </div>
+    <div class="dropdown">
+        <input type="text" class="dropdown-input" readonly placeholder="Select Genre" name="genre_id" value="{{sgenre}}"> 
+        <div class="dropdown-content">
+        {%for i in tgenres%}
+        {%if i[0] in genres%}
+          <input type="checkbox" id="genres{{i[0]}}" value="{{i[0]}}" checked>
+        {%else%}
+            <input type="checkbox" id="genres{{i[0]}}" value="{{i[0]}}">
+        {%endif%}
+        <label for="genres{{i[0]}}">{{i[1]}}</label><br>
+        {%endfor%}
+        </div>
+      </div><br>
+    <!-- Genre Dropdown -->
+    <div class="dropdown">
+      <input type="text" class="dropdown-input" readonly placeholder="Select Actor" name="actor_id" value="{{sactor}}"> 
+      <div class="dropdown-content">
+        {%for i in tactors%}
+        {%if i[0] in actors%}
+        <input type="checkbox" id="actors{{i[0]}}" value="{{i[0]}}" checked>
+        {%else%}
+        <input type="checkbox" id="actors{{i[0]}}" value="{{i[0]}}">
+        {%endif%}
+        <label for="actors{{i[0]}}">{{i[1]}}</label><br>
+        {%endfor%}
+      </div>
+    </div><br>
+
+    <!-- Technician Dropdown -->
+    <div class="dropdown">
+      <input type="text" class="dropdown-input" readonly placeholder="Select Technician" name="technician_id" value="{{stechnician}}"> 
+      <div class="dropdown-content">
+        {%for i in ttechnicians%}
+        {%if i[0] in technicians%}
+        <input type="checkbox" id="technicians{{i[0]}}" value="{{i[0]}}" checked> 
+        {%else%}
+        <input type="checkbox" id="technicians{{i[0]}}" value="{{i[0]}}">
+        {%endif%}
+        <label for="technicians{{i[0]}}">{{i[1]}}</label><br>
+        {%endfor%}
+        <!-- Add more technicians as needed -->
+      </div>
+    </div><br>
+
+    <button type="submit">update</button>
+  </form>
+
+  <script>
+    // Script to update input box on selection change
+    const dropdownContainers = document.querySelectorAll('.dropdown');
+    dropdownContainers.forEach(container => {
+      const selectedItems = container.querySelectorAll('.dropdown-content input[type="checkbox"]');
+      const inputBox = container.querySelector('.dropdown-input');
+      selectedItems.forEach(item => {
+        item.addEventListener('change', function() {
+          let selectedValues = [];
+          selectedItems.forEach(checkbox => {
+            if (checkbox.checked) {
+              selectedValues.push(checkbox.value);
+            }
+          });
+          inputBox.value = selectedValues.join(','); // Join selected values with comma
+        });
+      });
+    });
+  </script>
+</body>
+</html>

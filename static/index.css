@@ -1,0 +1,36 @@
+*{
+    margin: 0px;
+}
+body{
+    background-image: url('/static/back.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    /* background-position: center; */
+    font-family: Arial, sans-serif;
+    color:#53C9C2;
+}
+h1{
+    margin-left:420px;
+    margin-top: 250px;
+    font-size: 50px;
+}
+button{
+    background-color: #53C9C2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin:10px;
+}
+.btn1{
+    display: flex;
+    margin-left: 220px;
+    margin-top: 20px;
+}
+.btn2{
+    display: flex;
+    margin-top: 20px;
+    margin-left: 202px;
+}

@@ -1,0 +1,73 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.movie-info {
+    text-align: center;
+}
+
+.movie-info h3 {
+    margin-bottom: 10px;
+}
+
+.movie-info ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.movie-info ul li {
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.genre-list {
+    display: flex;
+    justify-content: center;
+}
+
+.genre-list li {
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: #53c9c2;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.actor-list,
+.technician-list {
+    display: flex;
+    justify-content: center;
+}
+
+.actor-list li,
+.technician-list li {
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: #53c9c2;
+    color: #fff;
+    border-radius: 5px;
+}
+span{
+    color: #53c9c2;
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details</title>
+    <link rel="stylesheet" href="/static/dashboard.css" />
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+
+<body>
+    <div class="header_fixed">
+        <table>
+            <div class="head">
+                <thead>
+                    <tr style="border: 2px solid #53C9C2;">
+                        <th>Movie <span id="span">Details</span></th>
+                        <th></th>
+                       
+                        <th>
+                            <input type="text" id="searchInput" class="search_bar" name="search" placeholder="By name,year_of_release..">
+                        </th>
+                    </tr>
+                </thead>
+            </div>
+            <tbody>
+                <tr style="border: 2px solid #53C9C2;">
+                    <th>Name</th>
+                    <th>Year Of Release</th>
+                    <th>Average Rating</th>
+                   
+                </tr>
+                {% for row in movies %}
+                <tr class="search-row">
+                    <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>
+         
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+    <script>
+       /* const viewButtons2 = document.querySelectorAll('.btn2');
+        viewButtons2.forEach(button => {
+            button.addEventListener('click', function() {
+                // Retrieve the unique_number from the data attribute
+                const uniqueNumber = button.getAttribute('data-unique-number');
+                document.location.href = '/deletemovie/'+uniqueNumber;
+            });
+        }); */
+        $(document).ready(function () {
+            $("#searchInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $(".search-row").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        }); 
+    </script>
+</body>
+</html>

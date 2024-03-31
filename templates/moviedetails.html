@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Movie Details</h1>
+        <div class="movie-info">
+            <h3>Movie Title: <span>{{movie[0][1]}}</span></h3>
+            <h3>Movie Year: <span>{{movie[0][2]}}</span></h3>
+            <h3>Movie Rating: <span>{{movie[0][3]}}</span></h3>
+            <h3>Movie Genre:</h3>
+            <ul class="genre-list">
+                {% for i in genres %}
+                <li>{{i[0]}}</li>
+                {% endfor %}
+            </ul>
+            <h3>Movie Actors:</h3>
+            <ul class="actor-list">
+                {% for i in actors %}
+                <li>{{i[0]}}</li>
+                {% endfor %}
+            </ul>
+            <h3>Movie Technicians:</h3>
+            <ul class="technician-list">
+                {% for i in technicians %}
+                <li>{{i[0]}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
