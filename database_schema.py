@@ -1,6 +1,22 @@
-# Description: This script creates the database schema for the movies database.
-# Note:create a database named movies before running the file
 import mysql.connector
+connection = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password=""
+)
+cursor = connection.cursor()
+# Create database
+def create_database(cursor, database_name):
+    try:
+        cursor.execute("CREATE DATABASE {}".format(database_name))
+        print("Database '{}' created successfully.".format(database_name))
+    except mysql.connector.Error as err:
+        print("Failed creating database: {}".format(err))
+create_database(cursor, 'movies')
+
+# Close cursor and connection
+cursor.close()
+connection.close()
 
 # Establish connection to MySQL server
 conn=mysql.connector.connect(host="localhost",user="root",password="",database="movies")

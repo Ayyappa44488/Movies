@@ -3,28 +3,38 @@ import mysql.connector
 conn=mysql.connector.connect(host="localhost",user="root",password="",database="movies")
 cursor = conn.cursor()
 app = Flask(__name__)
+
+
 @app.route('/')
 def index():
     #loading the index page
     return render_template('index.html')
+
+
 @app.route('/actorregister')
 def actorregister():
     #getting the auto increment id from the actor table and passing it to the register.html page to display it in the form
     cursor.execute("SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'movies' AND TABLE_NAME = 'actor'")
     auto_increment_id = cursor.fetchone()[0]
     return render_template('register.html',auto_increment_id=auto_increment_id,api="/addactor")
+
+
 @app.route('/technicianregister')
 def technicianregister():
     #getting the auto increment id from the technician table and passing it to the register.html page to display it in the form
     cursor.execute("SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'movies' AND TABLE_NAME = 'technician'")
     auto_increment_id = cursor.fetchone()[0]
     return render_template('register.html',auto_increment_id=auto_increment_id,api="/addtechnician")
+
+
 @app.route('/genreregister')
 def genreregister():
     #getting the auto increment id from the genre table and passing it to the register.html page to display it in the form
     cursor.execute("SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'movies' AND TABLE_NAME = 'genre'")
     auto_increment_id = cursor.fetchone()[0]
     return render_template('register.html',auto_increment_id=auto_increment_id,api="/addgenre")
+
+
 @app.route('/addactor',methods=['POST'])
 def addactor():
     #Adding the actor details to the actor table using the POST method
@@ -32,6 +42,8 @@ def addactor():
     cursor.execute("INSERT INTO actor (name) VALUES ('{}')".format(name))
     conn.commit()
     return redirect(url_for('actorregister'))
+
+
 @app.route('/addtechnician',methods=['POST'])
 def addtechnician():
     #Adding the technician details to the technician table using the POST method
@@ -39,6 +51,8 @@ def addtechnician():
     cursor.execute("INSERT INTO technician (name) VALUES ('{}')".format(name))
     conn.commit()
     return redirect(url_for('technicianregister'))
+
+
 @app.route('/addgenre',methods=['POST'])
 def addgenre():
     #Adding the genre details to the genre table using the POST method
@@ -46,6 +60,7 @@ def addgenre():
     cursor.execute("INSERT INTO genre (name) VALUES ('{}')".format(name))
     conn.commit()
     return redirect(url_for('genreregister'))
+
 
 @app.route('/movieregister')
 def movieregister():
@@ -59,6 +74,8 @@ def movieregister():
     cursor.execute("SELECT * FROM technician")
     technicians=cursor.fetchall()
     return render_template('movieregister.html',auto_increment_id=auto_increment_id,genres=genres,actors=actors,technicians=technicians)
+
+
 @app.route('/addmovie',methods=['POST'])
 def addmovie():
     #Adding the movie details to the movie table using the POST method and also adding the genre,actor and technician details to the respective tables.
@@ -85,6 +102,8 @@ def addmovie():
         cursor.execute(query)
         conn.commit()
     return redirect(url_for('movieregister'))
+
+
 @app.route('/showmovies')
 def showmovies():
     #retrieving the movie details from the movie table and passing it to the moviedashboard.html page to display it,also retrieving the genres,actors and technicians from the respective tables to display in the form used for filtering.
@@ -97,6 +116,8 @@ def showmovies():
     cursor.execute("SELECT * FROM technician")
     technicians=cursor.fetchall()
     return render_template('moviedashboard.html',movies=movies,tgenres=genres,tactors=actors,ttechnicians=technicians)
+
+
 @app.route('/showactors')
 def showactors():
     #retrieving the actor details from the actor table and passing it to the dashboard.html page to display it. and also retrieving the actors who are not associated with any movie to display in the form used for deleting.
@@ -106,6 +127,8 @@ def showactors():
     dactors=cursor.fetchall()
     dactors=[i[0] for i in dactors]
     return render_template('dashboard.html',data=actors,name="Actors",delete_data=dactors)
+
+
 @app.route('/showtechnicians')
 def showtechnicians():
     #retrieving the technician details from the technician table and passing it to the dashboard.html page to display it. and also retrieving the technicians who are not associated with any movie to display in the form used for deleting.
@@ -115,6 +138,8 @@ def showtechnicians():
     dtechnicians=cursor.fetchall()
     dtechnicians=[i[0] for i in dtechnicians]
     return render_template('dashboard.html',data=technicians,name="Technicians",delete_data=dtechnicians)
+
+
 @app.route('/showgenres')
 def showgenres():
     #retrieving the genre details from the genre table and passing it to the dashboard.html page to display it. and also retrieving the genres which are not associated with any movie to display in the form used for deleting.
@@ -124,6 +149,8 @@ def showgenres():
     dgenres=cursor.fetchall()
     dgenres=[i[0] for i in dgenres]
     return render_template('dashboard.html',data=genres,name="Genres",delete_data=dgenres)
+
+
 @app.route('/moviedetails/<int:movie_id>')
 def actors(movie_id):
     #retrieving the complete movie details of a particular movie and passing them to the moviedetails.html page.
@@ -136,6 +163,8 @@ def actors(movie_id):
     technicians=cursor.execute("SELECT name FROM technician WHERE technician_id IN (SELECT technician_id FROM movietechnician WHERE movie_id={})".format(movie_id))
     technicians=cursor.fetchall()
     return render_template('moviedetails.html',actors=actors,movie=movie,genres=genres,technicians=technicians)
+
+
 @app.route('/update/<int:movie_id>')
 def update(movie_id):
     #It is used for sending the data to the movie register form to display the data in the form.so that we can update the data.
@@ -157,6 +186,8 @@ def update(movie_id):
     ttechnicians=cursor.execute("SELECT * FROM technician")
     ttechnicians=cursor.fetchall()
     return render_template('updatemovie.html',movie=movie,genres=genres,actors=actors,technicians=technicians,tactors=tactors,tgenres=tgenres,ttechnicians=ttechnicians,sgenre=','.join(map(str, genres)),sactor=','.join(map(str, actors)),stechnician=','.join(map(str, technicians)))
+
+
 @app.route('/updatemovie',methods=['POST'])
 def updatemovie():
     #updating the movie details in the movie table and also updating the genre,actor and technician details in the respective tables using the POST method.
@@ -189,6 +220,8 @@ def updatemovie():
         cursor.execute(query)
         conn.commit()
     return redirect(url_for('showmovies'))
+
+
 @app.route('/deletemovie/<int:movie_id>')
 def delete(movie_id):
     #deleting the movie details from the movie table and also deleting the genre,actor and technician details from the respective tables.
@@ -198,6 +231,8 @@ def delete(movie_id):
     cursor.execute("DELETE FROM movie WHERE movie_id={}".format(movie_id))
     conn.commit()
     return redirect(url_for('showmovies'))
+
+
 @app.route('/filter',methods=['GET'])
 #filtering the movies based on the genre,actor and technician details provided by the user using the GET method.
 def filter():
@@ -231,6 +266,8 @@ def filter():
     cursor.execute(sql_query)
     result = cursor.fetchall()
     return render_template('moviedashboard.html',movies=result,tgenres=tgenres,tactors=tactors,ttechnicians=ttechnicians,genres=genre_ids,actors=actor_ids,technicians=technician_ids,sgenre=genre_id,sactor=actor_id,stechnician=technician_id)
+
+
 @app.route('/deleteactor/',methods=['POST'])
 def deleteactor():
     #deleting the actor details from the actor table using the POST method.
@@ -243,6 +280,8 @@ def deleteactor():
     )""", (actor_id,))
     conn.commit()
     return jsonify({'success': True, 'message': 'Actor deleted successfully'})
+
+
 @app.route('/deletetechnician/',methods=['POST'])
 def deletetechnician():
     #deleting the technician details from the technician table using the POST method.
@@ -255,6 +294,8 @@ def deletetechnician():
     )""", (technician_id,))
     conn.commit()
     return jsonify({'success': True, 'message': 'Technician deleted successfully'})
+
+
 @app.route('/deletegenre/',methods=['POST'])
 def deletegenre():
     #deleting the genre details from the genre table using the POST method.
@@ -267,42 +308,56 @@ def deletegenre():
     )""", (genre_id,))
     conn.commit()
     return jsonify({'success': True, 'message': 'Genre deleted successfully'})
+
+
 @app.route('/actorassociatedmovies/<int:actor_id>')
 def actorassociatemovies(actor_id):
     #retrieving the movies associated with a particular actor and passing them to the associatemovies.html page.
     cursor.execute("SELECT * FROM movie WHERE movie_id IN (SELECT movie_id FROM movieactor WHERE actor_id={})".format(actor_id))
     movies=cursor.fetchall()
     return render_template('associatemovies.html',movies=movies)
+
+
 @app.route('/technicianassociatedmovies/<int:technician_id>')
 def technicianassociatemovies(technician_id):
     #retrieving the movies associated with a particular technician and passing them to the associatemovies.html page.
     cursor.execute("SELECT * FROM movie WHERE movie_id IN (SELECT movie_id FROM movietechnician WHERE technician_id={})".format(technician_id))
     movies=cursor.fetchall()
     return render_template('associatemovies.html',movies=movies)
+
+
 @app.route('/genreassociatedmovies/<int:genre_id>')
 def genreassociatemovies(genre_id):
     #retrieving the movies associated with a particular genre and passing them to the associatemovies.html page.
     cursor.execute("SELECT * FROM movie WHERE movie_id IN (SELECT movie_id FROM moviegenre WHERE genre_id={})".format(genre_id))
     movies=cursor.fetchall()
     return render_template('associatemovies.html',movies=movies)
+
+
 @app.route('/updateactor/<int:actor_id>')
 def updateactor(actor_id):
     #retrieving the actor details from the actor table and passing them to the updatepeople.html page.To display them on the form so that we can update the data.
     cursor.execute("SELECT * FROM actor WHERE actor_id={}".format(actor_id))
     actor=cursor.fetchall()
     return render_template('update.html',data=actor,api="/updateactordetails")
+
+
 @app.route('/updatetechnician/<int:technician_id>')
 def updatetechnician(technician_id):
     #retrieving the technician details from the technician table and passing them to the updatepeople.html page.To display them on the form so that we can update the data.
     cursor.execute("SELECT * FROM technician WHERE technician_id={}".format(technician_id))
     technician=cursor.fetchall()
     return render_template('update.html',data=technician,api="/updatetechniciandetails")
+
+
 @app.route('/updategenre/<int:genre_id>')
 def updategenre(genre_id):
     #retrieving the genre details from the genre table and passing them to the updatepeople.html page.To display them on the form so that we can update the data.
     cursor.execute("SELECT * FROM genre WHERE genre_id={}".format(genre_id))
     genre=cursor.fetchall()
     return render_template('update.html',data=genre,api="/updategenredetails")
+
+
 @app.route('/updateactordetails',methods=['POST'])
 def updateactordetails():
     #updating the actor details in the actor table using the POST method.
@@ -311,6 +366,8 @@ def updateactordetails():
     cursor.execute("UPDATE actor SET name='{}' WHERE actor_id={}".format(name,actor_id))
     conn.commit()
     return redirect(url_for('showactors'))
+
+
 @app.route('/updatetechniciandetails',methods=['POST'])
 def updatetechniciandetails():
     #updating the technician details in the technician table using the POST method.
@@ -319,6 +376,8 @@ def updatetechniciandetails():
     cursor.execute("UPDATE technician SET name='{}' WHERE technician_id={}".format(name,technician_id))
     conn.commit()
     return redirect(url_for('showtechnicians'))
+
+
 @app.route('/updategenredetails',methods=['POST'])
 def updategenredetails():
     #updating the genre details in the genre table using the POST method.
@@ -327,5 +386,7 @@ def updategenredetails():
     cursor.execute("UPDATE genre SET name='{}' WHERE genre_id={}".format(name,genre_id))
     conn.commit()
     return redirect(url_for('showgenres'))
+
+
 if __name__ == '__main__':
     app.run(debug=True)
